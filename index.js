@@ -121,13 +121,15 @@ function processName(name) {
 	      "css-loader": "^5.0.1",
 	      "file-loader": "^6.2.0",
 	      "html-webpack-plugin": "^4.5.1",
-	      "react": "^17.0.1",
-	      "react-dom": "^17.0.1",
 	      "style-loader": "^2.0.0",
 	      "webpack": "^5.18.0",
 	      "webpack-cli": "^4.4.0",
 	      "webpack-dev-server": "^3.11.2"
 	    },
+		dependencies: {
+	      "react": "^17.0.1",
+	      "react-dom": "^17.0.1",
+		},
 	};
 	
 	const packageJsonString = JSON.stringify(packageJson, null, 4);
