@@ -108,27 +108,27 @@ function processName(name) {
 		name: npmName,
 		version: '0.1.0',
 		scripts: {
+			build: 'webpack',
 			start: 'webpack serve',
 		},
 	    devDependencies: {
-	      "@babel/core": "^7.12.10",
-	      "@babel/plugin-proposal-class-properties": "^7.12.1",
-	      "@babel/preset-env": "^7.12.11",
-	      "@babel/preset-react": "^7.12.10",
-	      "@bucky24/react-canvas": "^1.6.5",
-	      "@bucky24/react-canvas-map": "^0.6.2",
-	      "babel-loader": "^8.2.2",
-	      "css-loader": "^5.0.1",
-	      "file-loader": "^6.2.0",
-	      "html-webpack-plugin": "^4.5.1",
-	      "style-loader": "^2.0.0",
-	      "webpack": "^5.18.0",
-	      "webpack-cli": "^4.4.0",
-	      "webpack-dev-server": "^3.11.2"
+			"@babel/core": "^7.12.10",
+			"@babel/plugin-proposal-class-properties": "^7.12.1",
+			"@babel/preset-env": "^7.12.11",
+			"@babel/preset-react": "^7.12.10",
+			"babel-loader": "^8.2.2",
+			"css-loader": "^5.0.1",
+			"file-loader": "^6.2.0",
+			"html-webpack-plugin": "^4.5.1",
+			"style-loader": "^2.0.0",
+			"webpack": "^5.18.0",
+			"webpack-cli": "^4.4.0",
+			"webpack-dev-server": "^3.11.2"
 	    },
 		dependencies: {
-	      "react": "^17.0.1",
-	      "react-dom": "^17.0.1",
+			"prop-types": "^15.7.2",
+			"react": "^17.0.1",
+			"react-dom": "^17.0.1",
 		},
 	};
 	
@@ -148,9 +148,10 @@ function processName(name) {
 		name,
 	}, path.join("src", "App.js"));
 	copyFile("styles.css", fullPath, {}, path.join("src", "styles.css"));
+	copyFile("gitignore", fullPath, {}, path.join(".gitignore"));
 	
-	console.log("Installing packages...");
-	execSync("npm install");
+	// console.log("Installing packages (this may take a while)...");
+	// execSync("npm install");
 	
 	rl.close();
 })().catch((error) => {
