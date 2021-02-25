@@ -41,7 +41,7 @@ function getInput(prompt, def="") {
 
 function copyFile(localFile, remoteDir, templateVars=[], destination=null) {
 	console.log(`Copying ${destination || localFile}...`);
-	const local = path.join(__dirname, localFile);
+	const local = path.join(__dirname, "project_files", localFile);
 	let data = fs.readFileSync(local, 'utf8');
 	for (const templateKey in templateVars) {
 		const value = templateVars[templateKey];
@@ -63,8 +63,9 @@ function processName(name) {
 	const directory = await getInput("Now creating react app. Enter directory", ".");
 	let name = await getInput("Enter name", "React App");
 	const npmName = processName(name);
+	const useCanvas = await getInput("Use react canvas? (no)", false);
 	
-	console.log(directory, name, npmName);
+	console.log(directory, name, npmName, useCanvas);
 	
 	const fullPath = path.resolve(process.cwd(), directory);
 	console.log("Verifying directory", fullPath);
@@ -109,28 +110,35 @@ function processName(name) {
 		version: '0.1.0',
 		scripts: {
 			build: 'webpack',
-			start: 'webpack serve',
+			dev: 'webpack serve',
+			start: "node index.js",
+			postinstall: "npm run build",
 		},
 	    devDependencies: {
-			"@babel/core": "^7.12.10",
-			"@babel/plugin-proposal-class-properties": "^7.12.1",
-			"@babel/preset-env": "^7.12.11",
-			"@babel/preset-react": "^7.12.10",
-			"babel-loader": "^8.2.2",
-			"css-loader": "^5.0.1",
-			"file-loader": "^6.2.0",
-			"html-webpack-plugin": "^4.5.1",
-			"style-loader": "^2.0.0",
-			"webpack": "^5.18.0",
-			"webpack-cli": "^4.4.0",
-			"webpack-dev-server": "^3.11.2"
+			"@babel/core": "7.12.10",
+			"@babel/plugin-proposal-class-properties": "7.12.1",
+			"@babel/preset-env": "7.12.11",
+			"@babel/preset-react": "7.12.10",
+			"babel-loader": "8.2.2",
+			"css-loader": "5.0.1",
+			"file-loader": "6.2.0",
+			"html-webpack-plugin": "5.2.0",
+			"style-loader": "2.0.0",
+			"webpack": "5.24.2",
+			"webpack-cli": "4.5.0",
+			"webpack-dev-server": "3.11.2"
 	    },
 		dependencies: {
-			"prop-types": "^15.7.2",
-			"react": "^17.0.1",
-			"react-dom": "^17.0.1",
+			"express": "4.17.1",
+			"prop-types": "15.7.2",
+			"react": "17.0.1",
+			"react-dom": "17.0.1",
 		},
 	};
+
+	if (useCanvas) {
+		packageJson.dependencies["@bucky24/react-canvas"] = "1.7.0";
+	}
 	
 	const packageJsonString = JSON.stringify(packageJson, null, 4);
 	const packageFile = path.join(fullPath, "package.json");
@@ -143,12 +151,19 @@ function processName(name) {
 	copyFile("index.tmpl.html", fullPath, {
 		name,
 	});
-	copyFile("project_index.js", fullPath, {}, path.join("src", "index.js"));
-	copyFile("App.js", fullPath, {
-		name,
-	}, path.join("src", "App.js"));
+	copyFile("app_index.js", fullPath, {}, path.join("src", "index.js"));
+	if (useCanvas) {
+		copyFile("App_canvas.js", fullPath, {
+			name,
+		}, path.join("src", "App.js"));
+	} else {
+		copyFile("App.js", fullPath, {
+			name,
+		}, path.join("src", "App.js"));
+	}
 	copyFile("styles.css", fullPath, {}, path.join("src", "styles.css"));
 	copyFile("gitignore", fullPath, {}, path.join(".gitignore"));
+	copyFile("project_index.js", fullPath, {}, "index.js");
 	
 	// console.log("Installing packages (this may take a while)...");
 	// execSync("npm install");

@@ -1,14 +1,12 @@
 {
   "name": "create-react-app",
-  "version": "0.1.1",
-  "description": "",
+  "version": "0.2.0",
+  "description": "Very simple utility that creates a bare bones React app.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "author": "Bucky24",
   "license": "ISC",
   "bin": {
-	  "createReactApp": "./index.js"
+    "createReactApp": "./index.js"
   }
 }
