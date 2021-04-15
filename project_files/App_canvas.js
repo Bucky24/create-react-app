@@ -25,7 +25,7 @@ export default function App() {
 	return (<div className={styles.appRoot}>
 		<Canvas width={size.width} height={size.height}>
             <Text x={size.width/2} y={size.height/2}>
-                Welcome to test app
+                Welcome to {{name}}
             </Text>
         </Canvas>
 	</div>);

@@ -18,12 +18,14 @@ module.exports = {
 					loader: 'babel-loader',
 					options: {
 						presets: [
-							require.resolve('@babel/preset-env'),
+							[require.resolve('@babel/preset-env'), {
+								exclude: ["transform-regenerator"],
+							}],
 							'@babel/preset-react'
 						],
 						plugins: ["@babel/plugin-proposal-class-properties"]
-					}
-				}
+					},
+				},
 			},
 			{
 				test: /\.css$/,
@@ -33,8 +35,10 @@ module.exports = {
 				test: /\.css$/,
 				loader: 'css-loader',
 				options: {
-					modules: true,
-				}
+					modules: {
+						localIdentName: "[path][name]__[local]--[hash:base64:5]",
+					},
+				},
 			},
 			{
 				test: /\.(jpe?g|png|gif|svg)$/i,
