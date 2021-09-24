@@ -159,8 +159,16 @@ function processName(name) {
 		name,
 	});
 	copyFile("app_index.js", fullPath, {}, path.join("src", "index.js"));
-	if (useCanvas) {
+	if (useCanvas && !useElectron) {
 		copyFile("App_canvas.js", fullPath, {
+			name,
+		}, path.join("src", "App.js"));
+	} else if (useCanvas && useElectron) {
+		copyFile("App_canvas_electron.js", fullPath, {
+			name,
+		}, path.join("src", "App.js"));
+	} else if (!useCanvas && useElectron) {
+		copyFile("App_electron.js", fullPath, {
 			name,
 		}, path.join("src", "App.js"));
 	} else {
@@ -171,7 +179,14 @@ function processName(name) {
 	copyFile("styles.css", fullPath, {}, path.join("src", "styles.css"));
 	copyFile("gitignore", fullPath, {}, path.join(".gitignore"));
     if (useElectron) {
+    	console.log("Creating directory /server...");
+    	fs.mkdirSync(path.join(fullPath, 'server'));
+    	console.log("Creating directory /src/utils...");
+    	fs.mkdirSync(path.join(fullPath, 'src', 'utils'));
+
         copyFile("electron_index.js", fullPath, {}, "index.js");
+        copyFile("electron_commands.js", fullPath, {}, path.join("server", "commands.js"));
+        copyFile("electron_coms.js", fullPath, {}, path.join("src", "utils", "coms.js"));
     } else {
     	copyFile("project_index.js", fullPath, {}, "index.js");
     }
