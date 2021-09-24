@@ -64,8 +64,9 @@ function processName(name) {
 	let name = await getInput("Enter name", "React App");
 	const npmName = processName(name);
 	const useCanvas = await getInput("Use react canvas? (no)", false);
+    const useElectron = await getInput("Use electron? (no)", false);
 	
-	console.log(directory, name, npmName, useCanvas);
+	//console.log(directory, name, npmName, useCanvas);
 	
 	const fullPath = path.resolve(process.cwd(), directory);
 	console.log("Verifying directory", fullPath);
@@ -139,6 +140,12 @@ function processName(name) {
 	if (useCanvas) {
 		packageJson.dependencies["@bucky24/react-canvas"] = "1.7.0";
 	}
+    
+    if (useElectron) {
+        packageJson.scripts.dev = "NODE_ENV=development npm run build && NODE_ENV=development npm start";
+        packageJson.scripts.start = "electron .";
+        packageJson.dependencies.electron = "15.0.0";
+    }
 	
 	const packageJsonString = JSON.stringify(packageJson, null, 4);
 	const packageFile = path.join(fullPath, "package.json");
@@ -163,7 +170,11 @@ function processName(name) {
 	}
 	copyFile("styles.css", fullPath, {}, path.join("src", "styles.css"));
 	copyFile("gitignore", fullPath, {}, path.join(".gitignore"));
-	copyFile("project_index.js", fullPath, {}, "index.js");
+    if (useElectron) {
+        copyFile("electron_index.js", fullPath, {}, "index.js");
+    } else {
+    	copyFile("project_index.js", fullPath, {}, "index.js");
+    }
 	
 	// console.log("Installing packages (this may take a while)...");
 	// execSync("npm install");
