@@ -127,7 +127,7 @@ function processName(name) {
 			"style-loader": "2.0.0",
 			"webpack": "5.24.2",
 			"webpack-cli": "4.5.0",
-			"webpack-dev-server": "3.11.2"
+			"webpack-dev-server": "4.3.1"
 	    },
 		dependencies: {
 			"express": "4.17.1",
