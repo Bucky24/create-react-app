@@ -125,7 +125,7 @@ function processName(name) {
 			"html-webpack-plugin": "5.2.0",
 			"style-loader": "2.0.0",
 			"webpack": "5.24.2",
-			"webpack-cli": "4.5.0",
+			"webpack-cli": "4.9.0",
 			"webpack-dev-server": "3.11.2"
 	    },
 		dependencies: {
