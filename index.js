@@ -58,7 +58,7 @@ function processName(name) {
 	return name.toLowerCase().split(" ").join("_");
 }
 
-(async () => {
+async function createReactApp() {
 	console.log("Create React App running from ", process.cwd());
 	const directory = await getInput("Now creating react app. Enter directory", ".");
 	let name = await getInput("Enter name", "React App");
@@ -95,7 +95,7 @@ function processName(name) {
 				if (isFile) {
 					fs.unlinkSync(full);
 				} else {
-					fs.rmdirSync(full, { recursive: true });
+					fs.rmSync(full, { recursive: true });
 				}
 			}
 		}
@@ -193,7 +193,126 @@ function processName(name) {
 	
 	// console.log("Installing packages (this may take a while)...");
 	// execSync("npm install");
+}
+
+async function createReactLib() {
+	console.log("Create React Library running from ", process.cwd());
+	const directory = await getInput("Now creating react library. Enter directory", ".");
+	let name = await getInput("Enter name", "React Library");
+	const npmName = processName(name);
 	
+	const fullPath = path.resolve(process.cwd(), directory);
+	console.log("Verifying directory", fullPath);
+
+	const dir = fs.existsSync(fullPath);
+	
+	if (!dir) {
+		console.log("Directory does not exist, creating it...");
+		fs.mkdirSync(fullPath);
+	}
+	
+	const contents = fs.readdirSync(fullPath);
+	
+	if (contents.length > 0) {
+		const overwrite = await getInput("Directory not empty, continue (continuing will wipe the directory)?", false);
+		if (!overwrite) {
+			console.log("Cancelling creation.");
+			process.exit(1);
+		} else {
+			for (const content of contents) {
+				const full = path.join(fullPath, content);
+				const stat = await fs.promises.lstat(full);
+				const isFile = stat.isFile();
+				
+				if (isFile) {
+					fs.unlinkSync(full);
+				} else {
+					fs.rmSync(full, { recursive: true });
+				}
+			}
+		}
+	}
+	
+	console.log("Moving into working directory...");
+	process.chdir(fullPath);
+	
+	console.log("Initializing npm...");
+	
+	const packageJson = {
+		name: npmName,
+		version: '0.1.0',
+		scripts: {
+			build: 'babel',
+			publish: "npm run build; npm publish",
+			basicExample: "webpack serve --config ./examples/basicExample/webpack.config.js",
+		},
+	    devDependencies: {
+			"@babel/core": "7.12.10",
+			"@babel/plugin-proposal-class-properties": "7.12.1",
+			"@babel/preset-env": "7.12.11",
+			"@babel/preset-react": "7.12.10",
+			"babel-loader": "8.2.2",
+			"css-loader": "5.0.1",
+			"file-loader": "6.2.0",
+			"html-webpack-plugin": "5.2.0",
+			"style-loader": "2.0.0",
+			"webpack": "5.24.2",
+			"webpack-cli": "4.9.0",
+			"webpack-dev-server": "4.3.1",
+			"react-dom": "17.0.1",
+	    },
+		dependencies: {
+			"prop-types": "15.7.2",
+			"react": "17.0.1",
+		},
+		files: [
+			'src',
+		],
+		main: './src/index.js',
+	};
+	
+	const packageJsonString = JSON.stringify(packageJson, null, 4);
+	const packageFile = path.join(fullPath, "package.json");
+	fs.writeFileSync(packageFile, packageJsonString, 'utf8');
+	
+	console.log("Creating directory /src...");
+	fs.mkdirSync(path.join(fullPath, 'src'));
+
+	copyFile("Lib_index.js", path.join(fullPath, 'src'), {} , "index.js");
+
+	console.log("Creating directory /examples");
+	const examplesPath = path.join(fullPath, 'examples');
+	fs.mkdirSync(examplesPath);
+
+	copyFile("Lib_webpack.config.base.js", examplesPath, {
+		module_name: npmName,
+	}, "webpack.config.base.js");
+
+	console.log("Creating basic example");
+	const basicExamplePath = path.join(examplesPath, 'basicExample');
+	fs.mkdirSync(basicExamplePath);
+
+	copyFile("Lib_webpack.config.js", basicExamplePath, {}, "webpack.config.js");
+	copyFile("index.tmpl.html", basicExamplePath, {
+		name: `${name} - Basic Example`,
+	});
+	copyFile("app_index.js", basicExamplePath, {}, "index.js");
+	copyFile("App.js", basicExamplePath, {
+		name,
+	}, "App.js");
+	copyFile("styles.css", basicExamplePath);
+}
+
+(async () => {
+	const type = await getInput("What are you creating? React App (app, default), or React Library (lib)?", "app");
+	if (type === "app") {
+		await createReactApp();
+	} else if (type === "lib") {
+		await createReactLib();
+	} else {
+		console.log("unknown type");
+	}
+
 	rl.close();
 })().catch((error) => {
 	console.error(error);
