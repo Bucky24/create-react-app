@@ -242,13 +242,15 @@ async function createReactLib() {
 		name: npmName,
 		version: '0.1.0',
 		scripts: {
-			build: 'babel',
-			publish: "npm run build; npm publish",
+			build: 'babel src --out-dir build',
+			prepublishOnly: "npm run build",
 			basicExample: "webpack serve --config ./examples/basicExample/webpack.config.js",
 		},
 	    devDependencies: {
+			"@babel/cli": "7.16.7",
 			"@babel/core": "7.12.10",
 			"@babel/plugin-proposal-class-properties": "7.12.1",
+			"@babel/plugin-transform-react-jsx": "7.16.7",
 			"@babel/preset-env": "7.12.11",
 			"@babel/preset-react": "7.12.10",
 			"babel-loader": "8.2.2",
@@ -301,6 +303,8 @@ async function createReactLib() {
 		name,
 	}, "App.js");
 	copyFile("styles.css", basicExamplePath);
+	copyFile("babelrc", fullPath, {}, ".babelrc");
+	copyFile("gitignore", fullPath, {}, ".gitignore");
 }
 
 (async () => {
