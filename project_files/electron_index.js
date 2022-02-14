@@ -21,7 +21,7 @@ ipc.on('comsCommand', async (event, { command, data, id }) => {
 		id
 	});
 });
- 
+
 app.on('ready', () => {
 	const test = process.env.NODE_ENV === 'development';
 	const { width, height } = screen.getPrimaryDisplay().workAreaSize;

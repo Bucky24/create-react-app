@@ -126,8 +126,8 @@ function processName(name) {
 			"html-webpack-plugin": "5.2.0",
 			"style-loader": "2.0.0",
 			"webpack": "5.24.2",
-			"webpack-cli": "4.5.0",
-			"webpack-dev-server": "3.11.2"
+			"webpack-cli": "4.9.2",
+			"webpack-dev-server": "4.7.4"
 	    },
 		dependencies: {
 			"express": "4.17.1",
@@ -145,6 +145,8 @@ function processName(name) {
         packageJson.scripts.dev = "NODE_ENV=development npm run build && NODE_ENV=development npm start";
         packageJson.scripts.start = "electron .";
         packageJson.dependencies.electron = "15.0.0";
+        packageJson.scripts.dev_web = "node server.js";
+        packageJson.devDependencies.ws = '8.5.0';
     }
 	
 	const packageJsonString = JSON.stringify(packageJson, null, 4);
@@ -187,6 +189,7 @@ function processName(name) {
         copyFile("electron_index.js", fullPath, {}, "index.js");
         copyFile("electron_commands.js", fullPath, {}, path.join("server", "commands.js"));
         copyFile("electron_coms.js", fullPath, {}, path.join("src", "utils", "coms.js"));
+        copyFile("electron_server.js", fullPath, {}, "server.js");
     } else {
     	copyFile("project_index.js", fullPath, {}, "index.js");
     }
