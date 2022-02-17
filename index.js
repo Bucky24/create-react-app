@@ -266,14 +266,13 @@ async function createReactLib() {
 			"webpack-dev-server": "4.3.1",
 			"react-dom": "17.0.1",
 	    },
-		dependencies: {
-			"prop-types": "15.7.2",
-			"react": "17.0.1",
+		peerDependencies: {
+			"react": "^17.x.x",
 		},
 		files: [
-			'src',
+			'build',
 		],
-		main: './src/index.js',
+		main: './build/index.js',
 	};
 	
 	const packageJsonString = JSON.stringify(packageJson, null, 4);
