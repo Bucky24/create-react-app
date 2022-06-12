@@ -65,6 +65,14 @@ export default {
                     cache: 'no-cache',
                 }
             ).then((result) => {
+                if (result.status === 404) {
+                    return {
+                        data: {
+                            success: false,
+                            message: "Unknown command " + command,
+                        }
+                    };
+                }
                 return result.json();
             }).then((result) => {
                 return result.data;
