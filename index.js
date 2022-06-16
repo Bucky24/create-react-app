@@ -126,7 +126,7 @@ async function createReactApp() {
 			"html-webpack-plugin": "5.2.0",
 			"style-loader": "2.0.0",
 			"webpack": "5.24.2",
-			"webpack-cli": "4.9.2",
+			"webpack-cli": "4.10.0",
 			"webpack-dev-server": "4.7.4"
 	    },
 		dependencies: {
@@ -262,8 +262,8 @@ async function createReactLib() {
 			"html-webpack-plugin": "5.2.0",
 			"style-loader": "2.0.0",
 			"webpack": "5.24.2",
-			"webpack-cli": "4.9.0",
-			"webpack-dev-server": "4.3.1",
+			"webpack-cli": "4.10.0",
+			"webpack-dev-server": "4.7.4",
 			"react-dom": "18.2.0",
 			"react": "18.2.0"
 	    },
