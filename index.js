@@ -264,10 +264,11 @@ async function createReactLib() {
 			"webpack": "5.24.2",
 			"webpack-cli": "4.9.0",
 			"webpack-dev-server": "4.3.1",
-			"react-dom": "17.0.1",
+			"react-dom": "18.2.0",
+			"react": "18.2.0"
 	    },
 		peerDependencies: {
-			"react": "^17.x.x",
+			"react": "^18.x.x",
 		},
 		files: [
 			'build',
