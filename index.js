@@ -144,9 +144,11 @@ async function createReactApp() {
     if (useElectron) {
         packageJson.scripts.dev = "NODE_ENV=development npm run build && NODE_ENV=development npm start";
         packageJson.scripts.start = "electron .";
-        packageJson.dependencies.electron = "15.3.5";
+        packageJson.devDependencies.electron = "15.3.5";
+        packageJson.devDependencies['electron-builder'] = "23.3.3";
         packageJson.scripts.dev_web = "node server.js";
         packageJson.devDependencies.ws = '8.5.0';
+		packageJson.scripts.dist = "npm run build && electron-builder -p never --win";
     }
 	
 	const packageJsonString = JSON.stringify(packageJson, null, 4);
