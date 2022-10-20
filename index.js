@@ -3,6 +3,7 @@
 const readline = require('readline');
 const path = require('path');
 const fs = require("fs");
+const package = require("./package.json");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -368,6 +369,7 @@ async function createReactLib() {
 }
 
 (async () => {
+	console.log("Version v" + package.version);
 	const type = await getInput("What are you creating? React App (app, default), or React Library (lib)?", "app");
 	if (type === "app") {
 		await createReactApp();
