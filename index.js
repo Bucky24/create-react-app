@@ -319,7 +319,7 @@ async function createReactLib() {
 			"file-loader": "6.2.0",
 			"html-webpack-plugin": "5.2.0",
 			"style-loader": "2.0.0",
-			"webpack": "5.24.2",
+			"webpack": "5.74.0",
 			"webpack-cli": "4.10.0",
 			"webpack-dev-server": "4.7.4",
 			"react-dom": "18.2.0",
