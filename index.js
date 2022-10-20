@@ -3,7 +3,6 @@
 const readline = require('readline');
 const path = require('path');
 const fs = require("fs");
-const { execSync } = require("child_process");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -39,7 +38,7 @@ function getInput(prompt, def="") {
 	});
 }
 
-function copyFile(localFile, remoteDir, templateVars=[], destination=null) {
+function copyFile(localFile, remoteDir, templateVars={}, destination=null) {
 	console.log(`Copying ${destination || localFile}...`);
 	const local = path.join(__dirname, "project_files", localFile);
 	let data = fs.readFileSync(local, 'utf8');
@@ -166,29 +165,71 @@ async function createReactApp() {
 	
 	console.log("Creating directory /src...");
 	fs.mkdirSync(path.join(fullPath, 'src'));
+
+	const frontendTemplate = {
+		name,
+		jsx: `\treturn (<div className={styles.appRoot}>\n\t\tWelcome to ${name}\n\t</div>);`,
+		importsTop: '',
+		importsBottom: '',
+		setupCode: '',
+	}
+
+	if (useCanvas) {
+		frontendTemplate.setupCode += `
+	const [size, setSize] = useState({ width: 0, height: 0 });
+
+	const resize = () => {
+		setSize({
+			width: window.innerWidth,
+			height: innerHeight,
+		});
+	}
+
+	useEffect(() => {
+		window.addEventListener("resize", resize);
+		resize();
+
+		return () => {
+			window.removeEventListener("resize", resize);
+		}
+	}, [])`;
+		frontendTemplate.jsx = `
+	return (<div className={styles.appRoot}>
+		<Canvas width={size.width} height={size.height}>
+			<Text x={size.width/2} y={size.height/2}>
+				Welcome to ${name}
+			</Text>
+		</Canvas>
+	</div>);`;
+		frontendTemplate.importsTop += "import { Canvas, Text } from '@bucky24/react-canvas';\n";
+	}
+
+	if (useElectron) {
+		frontendTemplate.importsBottom += "import Coms from './utils/coms';\n";
+		frontendTemplate.setupCode += `
+	useEffect(() => {
+		Coms.send("ping", { foo: 'bar'}).then((results) => {
+			console.log(results);
+		});
+	}, []);`;
+	}
+
+	if (useBackend) {
+		frontendTemplate.importsBottom += "import callApi from './api';\n";
+		frontendTemplate.setupCode += `
+	useEffect(() => {
+		callApi("GET", "ping").then((result) => {
+			console.log("result from ping: ", result);
+		});
+	});`;
+	}
 	
 	copyFile("webpack.config.js", fullPath);
 	copyFile("index.tmpl.html", fullPath, {
 		name,
 	});
 	copyFile("app_index.js", fullPath, {}, path.join("src", "index.js"));
-	if (useCanvas && !useElectron && !useBackend) {
-		copyFile("App_canvas.js", fullPath, {
-			name,
-		}, path.join("src", "App.js"));
-	} else if (useCanvas && useElectron) {
-		copyFile("App_canvas_electron.js", fullPath, {
-			name,
-		}, path.join("src", "App.js"));
-	} else if (!useCanvas && useElectron) {
-		copyFile("App_electron.js", fullPath, {
-			name,
-		}, path.join("src", "App.js"));
-	} else {
-		copyFile("App.js", fullPath, {
-			name,
-		}, path.join("src", "App.js"));
-	}
+	copyFile("App.js", fullPath, frontendTemplate, path.join("src", "App.js"));
 	copyFile("styles.css", fullPath, {}, path.join("src", "styles.css"));
 	copyFile("gitignore", fullPath, {}, path.join(".gitignore"));
     if (useElectron) {

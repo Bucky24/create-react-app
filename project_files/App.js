@@ -1,9 +1,10 @@
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
+{{importsTop}}
 import styles from './styles.css';
 
+{{importsBottom}}
 export default function App() {
-	return (<div className={styles.appRoot}>
-		Welcome to {{name}}
-	</div>);
+{{setupCode}}
+
+{{jsx}}
 }
