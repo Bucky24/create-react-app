@@ -65,6 +65,11 @@ async function createReactApp() {
 	const npmName = processName(name);
 	const useCanvas = await getInput("Use react canvas? (no)", false);
     const useElectron = await getInput("Use electron? (no)", false);
+	let useBackend = false;
+
+	if (!useElectron) {
+		useBackend = await getInput("Generate full backend? (no)", false);
+	}
 	
 	//console.log(directory, name, npmName, useCanvas);
 	
@@ -150,6 +155,10 @@ async function createReactApp() {
         packageJson.devDependencies.ws = '8.5.0';
 		packageJson.scripts.dist = "npm run build && electron-builder -p never --win";
     }
+
+	if (useBackend) {
+		packageJson.scripts.start = "node server/index.js";
+	}
 	
 	const packageJsonString = JSON.stringify(packageJson, null, 4);
 	const packageFile = path.join(fullPath, "package.json");
@@ -163,7 +172,7 @@ async function createReactApp() {
 		name,
 	});
 	copyFile("app_index.js", fullPath, {}, path.join("src", "index.js"));
-	if (useCanvas && !useElectron) {
+	if (useCanvas && !useElectron && !useBackend) {
 		copyFile("App_canvas.js", fullPath, {
 			name,
 		}, path.join("src", "App.js"));
@@ -183,8 +192,8 @@ async function createReactApp() {
 	copyFile("styles.css", fullPath, {}, path.join("src", "styles.css"));
 	copyFile("gitignore", fullPath, {}, path.join(".gitignore"));
     if (useElectron) {
-    	console.log("Creating directory /server...");
-    	fs.mkdirSync(path.join(fullPath, 'server'));
+		console.log("Creating directory /server...");
+		fs.mkdirSync(path.join(fullPath, 'server'));	
     	console.log("Creating directory /src/utils...");
     	fs.mkdirSync(path.join(fullPath, 'src', 'utils'));
 
@@ -192,7 +201,12 @@ async function createReactApp() {
         copyFile("electron_commands.js", fullPath, {}, path.join("server", "commands.js"));
         copyFile("electron_coms.js", fullPath, {}, path.join("src", "utils", "coms.js"));
         copyFile("electron_server.js", fullPath, {}, "server.js");
-    } else {
+    } else if (useBackend) {
+		console.log("Creating directory /server...");
+		fs.mkdirSync(path.join(fullPath, 'server'));	
+    	copyFile("backend_index.js", fullPath, {}, path.join("server", "index.js"));
+		copyFile("api.js", fullPath, {}, path.join("src", "api.js"));
+	} else {
     	copyFile("project_index.js", fullPath, {}, "index.js");
     }
 	
