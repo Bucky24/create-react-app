@@ -157,7 +157,8 @@ async function createReactApp() {
     }
 
 	if (useBackend) {
-		packageJson.scripts.start = "node server/index.js";
+		packageJson.scripts.start = "nodemon server/index.js";
+		packageJson.dependencies.nodemon = "2.0.20";
 	}
 	
 	const packageJsonString = JSON.stringify(packageJson, null, 4);

@@ -4,7 +4,7 @@ const port = process.env.PORT || 9090;
 
 const app = express();
 
-app.get("ping", (req, res) => {
+app.get("/ping", (req, res) => {
     res.send("pong");
 });
 
