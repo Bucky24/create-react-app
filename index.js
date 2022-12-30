@@ -66,9 +66,14 @@ async function createReactApp() {
 	const useCanvas = await getInput("Use react canvas? (no)", false);
     const useElectron = await getInput("Use electron? (no)", false);
 	let useBackend = false;
+	let backendLang;
 
 	if (!useElectron) {
 		useBackend = await getInput("Generate full backend? (no)", false);
+	}
+
+	if (useBackend) {
+		backendLang = (await getInput("Backend language Node (node) or PHP (php)? (default node)", "node")).toLowerCase();
 	}
 	
 	//console.log(directory, name, npmName, useCanvas);
@@ -135,7 +140,6 @@ async function createReactApp() {
 			"webpack-dev-server": "4.7.4"
 	    },
 		dependencies: {
-			"express": "4.17.1",
 			"prop-types": "15.7.2",
 			"react": "17.0.1",
 			"react-dom": "17.0.1",
@@ -154,11 +158,19 @@ async function createReactApp() {
         packageJson.scripts.dev_web = "node server.js";
         packageJson.devDependencies.ws = '8.5.0';
 		packageJson.scripts.dist = "npm run build && electron-builder -p never --win";
+		packageJson.dependencies['express'] = '4.17.1';
     }
 
 	if (useBackend) {
-		packageJson.scripts.start = "nodemon server/index.js";
-		packageJson.dependencies.nodemon = "2.0.20";
+		if (backendLang === "node") {
+			packageJson.scripts.start = "nodemon server/index.js";
+			packageJson.dependencies.nodemon = "2.0.20";
+			packageJson.dependencies['express'] = '4.17.1';
+			packageJson.dependencies.cors = "2.8.5";
+		} else if (backendLang === "php") {
+			packageJson.dependencies['@bucky24/node-php'] = "0.6.12";
+			packageJson.scripts.start = "node server/index.js";
+		}
 	}
 	
 	const packageJsonString = JSON.stringify(packageJson, null, 4);
@@ -246,9 +258,18 @@ async function createReactApp() {
         copyFile("electron_server.js", fullPath, {}, "server.js");
     } else if (useBackend) {
 		console.log("Creating directory /server...");
-		fs.mkdirSync(path.join(fullPath, 'server'));	
-    	copyFile("backend_index.js", fullPath, {}, path.join("server", "index.js"));
 		copyFile("api.js", fullPath, {}, path.join("src", "api.js"));
+		fs.mkdirSync(path.join(fullPath, 'server'));	
+		if (backendLang === "node") {
+    		copyFile("backend_index.js", fullPath, {}, path.join("server", "index.js"));
+		} else {
+			copyFile("backend_php_index.js", fullPath, {}, path.join("server", "index.js"));
+			copyFile("backend_php_api.php", fullPath, {}, path.join("server", "api.php"));
+			fs.mkdirSync(path.join(fullPath, 'server', 'actions'));
+			copyFile("backend_php_ping.php", fullPath, {}, path.join("server", "actions", "ping.php"));
+			copyFile("backend_php_api_handler.php", fullPath, {}, path.join("server", "api_handler.php"));
+			copyFile("backend_php_htaccess", fullPath, {}, path.join("server", ".htaccess"));
+		}
 	} else {
     	copyFile("project_index.js", fullPath, {}, "index.js");
     }
