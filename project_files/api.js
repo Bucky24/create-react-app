@@ -36,7 +36,7 @@ async function callApi(method, api, data = {}) {
         options.body = JSON.stringify(data);
     }
 
-    const result = await fetch(fullURL);
+    const result = await fetch(fullURL, options);
     if (!result.ok) {
         console.error("Result got " + result.status + " for " + result.url);
         return null;
