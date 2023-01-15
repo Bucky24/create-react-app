@@ -168,7 +168,7 @@ async function createReactApp() {
 			packageJson.dependencies['express'] = '4.17.1';
 			packageJson.dependencies.cors = "2.8.5";
 		} else if (backendLang === "php") {
-			packageJson.dependencies['@bucky24/node-php'] = "0.6.12";
+			packageJson.dependencies['@bucky24/node-php'] = "0.6.14";
 			packageJson.scripts.start = "node server/index.js";
 		}
 	}
