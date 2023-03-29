@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 {{importsTop}}
-import styles from './styles.css';
+{{styles}}
 
 {{importsBottom}}
 export default function App() {

@@ -62,6 +62,7 @@ async function createReactApp() {
 	console.log("Create React App running from ", process.cwd());
 	const directory = await getInput("Now creating react app. Enter directory", ".");
 	let name = await getInput("Enter name", "React App");
+	const builder = await getInput("Webpack (w) or Vite (v)? (w)", "w");
 	const npmName = processName(name);
 	const useCanvas = await getInput("Use react canvas? (no)", false);
     const useElectron = await getInput("Use electron? (no)", false);
@@ -120,12 +121,22 @@ async function createReactApp() {
 		name: npmName,
 		version: '0.1.0',
 		scripts: {
-			build: 'webpack',
-			dev: 'webpack serve',
 			start: "node index.js",
 			postinstall: "npm run build",
 		},
-	    devDependencies: {
+	    devDependencies: {},
+		dependencies: {
+			"prop-types": "15.7.2",
+			"react": "17.0.1",
+			"react-dom": "17.0.1",
+		},
+	};
+
+	if (builder === "w") {
+		packageJson.scripts.build = 'webpack';
+		packageJson.scripts.dev = 'webpack serve';
+		packageJson.devDependencies = {
+			...packageJson.devDependencies,
 			"@babel/core": "7.12.10",
 			"@babel/plugin-proposal-class-properties": "7.12.1",
 			"@babel/preset-env": "7.12.11",
@@ -138,13 +149,16 @@ async function createReactApp() {
 			"webpack": "5.24.2",
 			"webpack-cli": "4.10.0",
 			"webpack-dev-server": "4.7.4"
-	    },
-		dependencies: {
-			"prop-types": "15.7.2",
-			"react": "17.0.1",
-			"react-dom": "17.0.1",
-		},
-	};
+	    };
+	} else if (builder === "v") {
+		packageJson.scripts.build = 'vite build';
+		packageJson.scripts.dev = 'vite';
+		packageJson.devDependencies = {
+			...packageJson.devDependencies,
+			"@vitejs/plugin-react": "^3.1.0",
+			"vite": "^4.2.0"
+	    };
+	}
 
 	if (useCanvas) {
 		packageJson.dependencies["@bucky24/react-canvas"] = "1.7.0";
@@ -186,6 +200,7 @@ async function createReactApp() {
 		importsTop: '',
 		importsBottom: '',
 		setupCode: '',
+		styles: "import styles from './styles.css';",
 	}
 
 	if (useCanvas) {
@@ -237,13 +252,24 @@ async function createReactApp() {
 		});
 	});`;
 	}
+
+	let ending = ".js"
 	
-	copyFile("webpack.config.js", fullPath);
-	copyFile("index.tmpl.html", fullPath, {
-		name,
-	});
-	copyFile("app_index.js", fullPath, {}, path.join("src", "index.js"));
-	copyFile("App.js", fullPath, frontendTemplate, path.join("src", "App.js"));
+	if (builder === "w") {
+		copyFile("webpack.config.js", fullPath);
+		copyFile("index.tmpl.html", fullPath, {
+			name,
+		});
+	} else {
+		copyFile("app_vite.config.js", fullPath, {}, "vite.config.js");
+		copyFile("app_vite_index.html", fullPath, {
+			name,
+		}, "index.html");
+		ending = ".jsx";
+		frontendTemplate.styles = "import styles from './styles.css?inline';";
+	}
+	copyFile("app_index.js", fullPath, {}, path.join("src", "index" + ending));
+	copyFile("App.js", fullPath, frontendTemplate, path.join("src", "App" + ending));
 	copyFile("styles.css", fullPath, {}, path.join("src", "styles.css"));
 	copyFile("gitignore", fullPath, {}, path.join(".gitignore"));
     if (useElectron) {
