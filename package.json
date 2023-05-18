@@ -1,6 +1,6 @@
 {
   "name": "create-react-app",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Very simple utility that creates a bare bones React app.",
   "main": "index.js",
   "scripts": {},
