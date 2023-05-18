@@ -266,11 +266,15 @@ async function createReactApp() {
 			name,
 		}, "index.html");
 		ending = ".jsx";
-		frontendTemplate.styles = "import styles from './styles.css?inline';";
+		frontendTemplate.styles = "import styles from './styles.module.css';";
 	}
 	copyFile("app_index.js", fullPath, {}, path.join("src", "index" + ending));
 	copyFile("App.js", fullPath, frontendTemplate, path.join("src", "App" + ending));
-	copyFile("styles.css", fullPath, {}, path.join("src", "styles.css"));
+	if (builder === "w") {
+		copyFile("styles.css", fullPath, {}, path.join("src", "styles.css"));
+	} else {
+		copyFile("styles.css", fullPath, {}, path.join("src", "styles.module.css"));
+	}
 	copyFile("gitignore", fullPath, {}, path.join(".gitignore"));
     if (useElectron) {
 		console.log("Creating directory /server...");
