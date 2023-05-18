@@ -278,10 +278,15 @@ async function createReactApp() {
     	console.log("Creating directory /src/utils...");
     	fs.mkdirSync(path.join(fullPath, 'src', 'utils'));
 
-        copyFile("electron_index.js", fullPath, {}, "index.js");
         copyFile("electron_commands.js", fullPath, {}, path.join("server", "commands.js"));
         copyFile("electron_coms.js", fullPath, {}, path.join("src", "utils", "coms.js"));
-        copyFile("electron_server.js", fullPath, {}, "server.js");
+		if (builder === "w") {
+        	copyFile("electron_server_webpack.js", fullPath, {}, "server.js");
+			copyFile("electron_index_webpack.js", fullPath, {}, "index.js");
+		} else if (builder === "v") {
+        	copyFile("electron_server_vite.js", fullPath, {}, "server.js");
+			copyFile("electron_index_vite.js", fullPath, {}, "index.js");
+		}
     } else if (useBackend) {
 		console.log("Creating directory /server...");
 		copyFile("api.js", fullPath, {}, path.join("src", "api.js"));
