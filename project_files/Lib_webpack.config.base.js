@@ -65,6 +65,9 @@ module.exports = (dirname) => {
             colors: true
         },
         devtool: 'source-map',
+        devServer: {
+            historyApiFallback: true,
+        },
         plugins: [
             new HtmlWebpackPlugin({
                 template: path.resolve(dirname, 'index.tmpl.html')

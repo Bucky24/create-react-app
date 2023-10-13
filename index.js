@@ -177,7 +177,8 @@ async function createReactApp() {
 
 	if (useBackend) {
 		if (backendLang === "node") {
-			packageJson.scripts.start = "nodemon server/index.js";
+			packageJson.scripts.start = "node server/index.js";
+			packageJson.scripts['start:dev'] = "nodemon server/index.js";
 			packageJson.dependencies.nodemon = "2.0.20";
 			packageJson.dependencies['express'] = '4.17.1';
 			packageJson.dependencies.cors = "2.8.5";
@@ -247,7 +248,7 @@ async function createReactApp() {
 		frontendTemplate.importsBottom += "import callApi from './api';\n";
 		frontendTemplate.setupCode += `
 	useEffect(() => {
-		callApi("GET", "ping").then((result) => {
+		callApi("GET", "api/ping").then((result) => {
 			console.log("result from ping: ", result);
 		});
 	});`;

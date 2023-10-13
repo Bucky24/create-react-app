@@ -36,11 +36,9 @@ function sendFile(res, file) {
     fs.createReadStream(file).pipe(res);
 }
 
-app.get('/', (req, res) => {
-    sendFile(res, path.join(__dirname, "build", "index.html"));
-});
+app.use(express.static(path.join(__dirname, "build")));
 
-app.post('/api', async (req, res) => {
+app.post('/api/ping', async (req, res) => {
     const { command, data } = req.body;
 
 	if (!commands[command]) {

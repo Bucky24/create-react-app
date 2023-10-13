@@ -1,9 +1,5 @@
 function getUrl() {
-    if (window.location.hostname === "localhost") {
-        return "http://localhost:9090";
-    } else {
-        return window.location.origin;
-    }
+    return window.location.origin;
 }
 
 async function callApi(method, api, data = {}) {
