@@ -5,6 +5,9 @@ header('Access-Control-Allow-Methods: GET, POST');
 // remove prepended slash
 $action = $_REQUEST['action'];
 
+// remove the "api/" piece
+$action = substr($action, 4, strlen($action));
+
 $file = __DIR__ . "/actions/" . $action . ".php";
 
 if (!file_exists($file)) {
